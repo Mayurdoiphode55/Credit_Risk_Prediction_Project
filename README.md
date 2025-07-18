@@ -1,4 +1,4 @@
-#__Credit Risk & Loan Approval Prediction Dashboard 🏦__#
+__Credit Risk & Loan Approval Prediction Dashboard 🏦__
 
 An interactive web dashboard built with Streamlit to predict the probability of a loan being approved based on applicant details. This project demonstrates the end-to-end process of data cleaning, feature engineering, model training, and deployment into a user-friendly application.
 
