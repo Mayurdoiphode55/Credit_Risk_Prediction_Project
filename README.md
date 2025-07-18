@@ -1,11 +1,11 @@
-Credit Risk & Loan Approval Prediction Dashboard 🏦
+#__Credit Risk & Loan Approval Prediction Dashboard 🏦__#
 
 An interactive web dashboard built with Streamlit to predict the probability of a loan being approved based on applicant details. This project demonstrates the end-to-end process of data cleaning, feature engineering, model training, and deployment into a user-friendly application.
 
 📸 Screenshot
 It is highly recommended to add a screenshot of your running dashboard here. It makes a huge difference!
 
-✨ Features
+__✨ Features__
 
 Exploratory Data Analysis (EDA): Interactive charts and graphs to explore the relationships between applicant features and loan approval status.
 
@@ -15,7 +15,7 @@ Prediction Probability: Shows the model's confidence in its prediction (e.g., 85
 
 Clean & Responsive UI: A simple and intuitive interface that works on different screen sizes.
 
-🛠️ Tech Stack
+__🛠️ Tech Stack__
 
 Backend & Modeling:
 
@@ -57,17 +57,17 @@ Credit_Risk_Prediction_Project/
 
 └── README.md               # You are here!
 
-⚙️ Setup and Installation
+__⚙️ Setup and Installation__
 
 To run this project on your local machine, follow these steps:
 
 1. Clone the Repository:
 
-<pre><code>```bash git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git] ```</code></pre>
+<pre><code>bash git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git]</code></pre>
 
 (https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git)
 
-cd Credit_Risk_Prediction_Project
+<pre><code> cd Credit_Risk_Prediction_Project </code></pre>
 
 2. Create and Activate a Virtual Environment:
 
@@ -75,15 +75,15 @@ This keeps your project dependencies isolated.
 
 # For Windows
 
-python -m venv venv
+python -m venv venv </code></pre>
 
-.\venv\Scripts\Activate.ps1
+<pre><code> .\venv\Scripts\Activate.ps1 </code></pre>
 
 # For macOS/Linux
 
-python3 -m venv venv
+<pre><code> python3 -m venv venv </code></pre>
 
-source venv/bin/activate
+<pre><code> source venv/bin/activate python </code></pre>
 
 
 
@@ -91,13 +91,13 @@ source venv/bin/activate
 
 This command installs all the necessary libraries listed in requirements.txt.
 
-pip install -r requirements.txt
+<pre><code>pip install -r requirements.txt</code></pre>
 
 4. Run the Streamlit App:
 
 This will start the web server and open the dashboard in your browser.
 
-streamlit run dashboard.py
+<pre><code>streamlit run dashboard.py </code></pre>
 
 📈 Model Details
 
