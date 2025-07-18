@@ -61,7 +61,7 @@ __⚙️ Setup and Installation__
 
 To run this project on your local machine, follow these steps:
 
-1. Clone the Repository:
+__1. Clone the Repository:__
 
 <pre><code>bash git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git]</code></pre>
 
@@ -69,7 +69,7 @@ To run this project on your local machine, follow these steps:
 
 <pre><code> cd Credit_Risk_Prediction_Project </code></pre>
 
-2. Create and Activate a Virtual Environment:
+__2. Create and Activate a Virtual Environment:__
 
 This keeps your project dependencies isolated.
 
@@ -87,19 +87,19 @@ python -m venv venv </code></pre>
 
 
 
-3. Install Dependencies:
+__3. Install Dependencies:__
 
 This command installs all the necessary libraries listed in requirements.txt.
 
 <pre><code>pip install -r requirements.txt</code></pre>
 
-4. Run the Streamlit App:
+__4. Run the Streamlit App:__
 
 This will start the web server and open the dashboard in your browser.
 
 <pre><code>streamlit run dashboard.py </code></pre>
 
-📈 Model Details
+__📈 Model Details__
 
 The prediction model is a RandomForestClassifier (or XGBClassifier, whichever you used) wrapped in a Scikit-learn Pipeline. The pipeline handles all preprocessing steps, including:
 
@@ -111,12 +111,12 @@ Encoding categorical features using OneHotEncoder.
 
 The model achieved an accuracy of [Enter Your Accuracy Here, e.g., 82%] on the validation set.
 
-👤 Author
+__👤 Author__
 
 Mayur Doiphode
 
 GitHub: @Mayurdoiphode55
 
 
-📄 License
+__📄 License__
 This project is licensed under the MIT License. See the LICENSE file for details.
