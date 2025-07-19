@@ -75,7 +75,7 @@ This keeps your project dependencies isolated.
 
 # For Windows
 
-python -m venv venv </code></pre>
+<pre><code>python -m venv venv </code></pre>
 
 <pre><code> .\venv\Scripts\Activate.ps1 </code></pre>
 
