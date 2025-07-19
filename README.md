@@ -98,6 +98,8 @@ __4. Run the Streamlit App:__
 This will start the web server and open the dashboard in your browser.
 
 <pre><code>streamlit run dashboard.py </code></pre>
+__OR__
+<pre><code>python -m streamlit run dashboard.py </code></pre>
 
 __📈 Model Details__
 
