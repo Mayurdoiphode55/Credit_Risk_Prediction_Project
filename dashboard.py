@@ -1,7 +1,3 @@
-import os
-
-# Get the absolute path to the current file (dashboard.py)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import streamlit as st
 import pandas as pd
@@ -19,10 +15,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-MODEL_PATH = os.path.join(BASE_DIR, 'risk_model.joblib')
-FEATURE_NAMES_PATH = os.path.join(BASE_DIR, 'feature_names.pkl')
-SHAP_EXPLAINER_PATH = os.path.join(BASE_DIR, 'shap_explainer.joblib')
-
+# --- PATHS ---
+MODEL_PATH = 'risk_model.joblib'
+TRAIN_DATA_PATH = 'train.csv'
+TEST_DATA_PATH = 'test.csv'
 
 
 # --- LOAD AND CREATE ARTIFACTS ---
