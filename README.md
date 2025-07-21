@@ -63,7 +63,7 @@ To run this project on your local machine, follow these steps:
 
 __1. Clone the Repository:__
 
-<pre><code>bash git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git]</code></pre>
+<pre><code>git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git]</code></pre>
 
 (https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git)
 
