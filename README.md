@@ -83,6 +83,19 @@ erDiagram
     loan_applications ||--o{ predictions : "receives"
     predictions ||--|{ explanations : "is composed of"
 ```
+
+---
+## 📸 Screenshots
+
+*(**TODO**: Add your own screenshots here!)*
+
+**Prediction Page with SHAP Explanation**
+![Prediction Page](https://i.imgur.com/example-link.png)
+
+**Prediction History & Monitoring Dashboard**
+![Monitoring Page](https://i.imgur.com/example-link.png)
+
+---
 ## 🚀 Getting Started
 
 Follow these steps to set up and run the project on your local machine.
@@ -139,3 +152,8 @@ Once the setup is complete, run the Streamlit application from your terminal:
 streamlit run dashboard.py
 ```
 A new tab should open in your web browser with the dashboard running!
+
+---
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
