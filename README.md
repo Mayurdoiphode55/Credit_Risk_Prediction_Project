@@ -26,6 +26,27 @@ This project is an end-to-end machine learning application designed to predict c
 * **Plotting**: Plotly, Matplotlib
 
 ---
+## 📈 Model Performance
+
+The XGBoost model was evaluated on the test set to assess its performance in predicting loan approval status. The model demonstrates strong predictive power with an overall accuracy of 84%.
+
+**Classification Report:**
+
+| | Precision | Recall | F1-Score | Support |
+| :--- | :--- | :--- | :--- | :--- |
+| **0 (Rejected)** | 0.95 | 0.55 | 0.70 | 38 |
+| **1 (Approved)** | 0.80 | 0.98 | 0.88 | 85 |
+| | | | | |
+| **Accuracy** | | | **0.84** | 123 |
+| **Macro Avg** | 0.88 | 0.77 | 0.79 | 123 |
+| **Weighted Avg** | 0.85 | 0.84 | 0.82 | 123 |
+
+### Key Observations:
+* **High Accuracy**: The model achieves an **overall accuracy of 84%**, correctly classifying the majority of loan applications in the test set.
+* **Excellent Recall for Approvals**: The model excels at identifying applicants who should be approved, with a **recall of 0.98** for the "Approved" class (1). This is crucial for a bank, as it means the model rarely misses a qualified applicant.
+* **Strong Precision for Rejections**: When the model predicts a rejection, it is correct **95% of the time** (precision of 0.95 for the "Rejected" class). This minimizes the risk of rejecting creditworthy applicants incorrectly.
+
+---
 ## 🏗️ System Architecture
 
 The application follows a simple but powerful architecture where the Streamlit frontend communicates with the ML model and the MySQL database.
