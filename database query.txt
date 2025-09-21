@@ -1,0 +1,46 @@
+USE credit_risk_db;
+
+-- This empties the database
+DROP TABLE IF EXISTS explanations;
+DROP TABLE IF EXISTS predictions;
+DROP TABLE IF EXISTS loan_applications;
+DROP TABLE IF EXISTS customers;
+
+-- This prepares the empty tables again
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    Gender VARCHAR(10),
+    Married VARCHAR(10),
+    Dependents VARCHAR(10),
+    Education VARCHAR(50),
+    Self_Employed VARCHAR(10),
+    Income FLOAT
+);
+
+CREATE TABLE loan_applications (
+    application_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    LoanAmount FLOAT,
+    Loan_Amount_Term INT,
+    Property_Area VARCHAR(50),
+    Credit_History BOOLEAN,
+    Status VARCHAR(10),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE predictions (
+    Prediction_Id INT AUTO_INCREMENT PRIMARY KEY,
+    Application_Id INT,
+    Predicted_Status VARCHAR(20),
+    Probability FLOAT,
+    Prediction_Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Application_Id) REFERENCES loan_applications(application_id)
+);
+
+CREATE TABLE explanations (
+    Explanation_Id INT AUTO_INCREMENT PRIMARY KEY,
+    Prediction_Id INT,
+    Feature_Name VARCHAR(100),
+    Shap_Value FLOAT,
+    FOREIGN KEY (Prediction_Id) REFERENCES predictions(Prediction_Id)
+);
