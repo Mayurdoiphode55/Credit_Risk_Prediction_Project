@@ -83,19 +83,6 @@ erDiagram
     loan_applications ||--o{ predictions : "receives"
     predictions ||--|{ explanations : "is composed of"
 ```
-
----
-## 📸 Screenshots
-
-*(**TODO**: Add your own screenshots here!)*
-
-**Prediction Page with SHAP Explanation**
-![Prediction Page](https://i.imgur.com/example-link.png)
-
-**Prediction History & Monitoring Dashboard**
-![Monitoring Page](https://i.imgur.com/example-link.png)
-
----
 ## 🚀 Getting Started
 
 Follow these steps to set up and run the project on your local machine.
