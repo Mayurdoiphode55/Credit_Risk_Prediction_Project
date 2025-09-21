@@ -1,124 +1,142 @@
-__Credit Risk & Loan Approval Prediction Dashboard 🏦__
+# 🏦 Credit Risk Prediction System with MLOps & Explainable AI
 
-An interactive web dashboard built with Streamlit to predict the probability of a loan being approved based on applicant details. This project demonstrates the end-to-end process of data cleaning, feature engineering, model training, and deployment into a user-friendly application.
+This project is an end-to-end machine learning application designed to predict credit risk for loan applications. It integrates a powerful XGBoost model with a full database backend and an interactive web dashboard built with Streamlit, demonstrating a full MLOps cycle from data loading to prediction, explanation, and monitoring.
 
-📸 Screenshot
-It is highly recommended to add a screenshot of your running dashboard here. It makes a huge difference!
+---
+## ✨ Key Features
 
-__✨ Features__
+* **Multi-Page Web Dashboard**: An interactive and user-friendly interface built with Streamlit for data exploration, prediction, and monitoring.
+* **High-Accuracy ML Model**: Utilizes an **XGBoost** classifier, trained on historical loan data, for robust and reliable predictions.
+* **Full Database Integration**: A **MySQL** database backend stores all customer data, loan applications, predictions, and model explanations, making the system persistent and scalable.
+* **Explainable AI (XAI)**:
+    * **Local Explanations**: Generates **SHAP force plots** for every prediction, showing exactly which features contributed to the loan approval or rejection decision.
+    * **Global Explanations**: Features a dedicated dashboard page to analyze all historical SHAP values stored in the database, revealing the most influential features for the model's behavior over time.
+* **Prediction Monitoring**: A "Prediction History" dashboard page queries the database to display key metrics, prediction distributions, and a log of the most recent decisions made by the model.
+* **Automated Data Loading**: A script is provided to automatically migrate the initial dataset from a CSV file into the normalized relational database schema.
 
-Exploratory Data Analysis (EDA): Interactive charts and graphs to explore the relationships between applicant features and loan approval status.
+---
+## 🛠️ Tech Stack
 
-Real-time Prediction: A user-friendly form to input an applicant's details and receive an instant prediction on their loan approval status.
+* **Backend & ML**: Python, Pandas, NumPy, Scikit-learn
+* **Machine Learning Model**: XGBoost
+* **Explainability**: SHAP
+* **Web Framework**: Streamlit
+* **Database**: MySQL
+* **DB Connector**: SQLAlchemy, PyMySQL
+* **Plotting**: Plotly, Matplotlib
 
-Prediction Probability: Shows the model's confidence in its prediction (e.g., 85% probability of approval).
+---
+## 🏗️ System Architecture
 
-Clean & Responsive UI: A simple and intuitive interface that works on different screen sizes.
+The application follows a simple but powerful architecture where the Streamlit frontend communicates with the ML model and the MySQL database.
 
-__🛠️ Tech Stack__
+```mermaid
+graph TD
+    A[User] -->|Interacts with| B(Streamlit Dashboard);
+    B -->|Fetches Data for UI| E[(MySQL Database)];
+    B -->|Sends Applicant Data| C{ML Prediction Pipeline};
+    C -->|Loads Model| D([risk_model.joblib]);
+    C -->|Makes Prediction| B;
+    B -->|Displays Result & SHAP Plot| A;
+    B -->|Logs Prediction & SHAP Values| E;
+```
 
-Backend & Modeling:
+---
+## 🗂️ Database Schema (ERD)
 
-Python: Core programming language.
+The database is designed with four normalized tables to efficiently store all relevant information.
 
-Pandas: For data manipulation and analysis.
+```mermaid
+erDiagram
+    customers {
+        INT customer_id PK
+        VARCHAR Gender
+        VARCHAR Married
+        VARCHAR Dependents
+        VARCHAR Education
+        VARCHAR Self_Employed
+        FLOAT Income
+    }
+    loan_applications {
+        INT application_id PK
+        INT customer_id FK
+        FLOAT LoanAmount
+        INT Loan_Amount_Term
+        VARCHAR Property_Area
+        BOOLEAN Credit_History
+        VARCHAR Status
+    }
+    predictions {
+        INT Prediction_Id PK
+        INT Application_Id FK
+        VARCHAR Predicted_Status
+        FLOAT Probability
+        TIMESTAMP Prediction_Date
+    }
+    explanations {
+        INT Explanation_Id PK
+        INT Prediction_Id FK
+        VARCHAR Feature_Name
+        FLOAT Shap_Value
+    }
+    customers ||--|{ loan_applications : "submits"
+    loan_applications ||--o{ predictions : "receives"
+    predictions ||--|{ explanations : "is composed of"
+```
 
-Scikit-learn: For building the machine learning pipeline (preprocessing, modeling).
+---
+## 📸 Screenshots
 
-XGBoost / RandomForest: The algorithm used for the classification model.
+*(**TODO**: Add your own screenshots here!)*
 
-Joblib / Pickle: For saving and loading the trained model pipeline.
+**Prediction Page with SHAP Explanation**
+![Prediction Page](https://i.imgur.com/example-link.png)
 
-Frontend & Deployment:
+**Prediction History & Monitoring Dashboard**
+![Monitoring Page](https://i.imgur.com/example-link.png)
 
-Streamlit: For building and serving the interactive web application.
+---
+## 🚀 Getting Started
 
-Plotly Express: For creating interactive data visualizations.
+Follow these steps to set up and run the project on your local machine.
 
-📂 Project Structure
+### 1. Prerequisites
+* Git
+* Conda or Miniconda
+* A running MySQL Server instance on your local machine.
 
-Credit_Risk_Prediction_Project/
+### 2. Setup Instructions
 
-│
+**Clone the repository:**
+```bash
+git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git](https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git)
+cd Credit_Risk_Prediction_Project
+```
 
-├── .venv/                  # Virtual environment folder
+**Create and activate the Conda environment:**
+```bash
+conda create --name credit_risk_env python=3.11 -y
+conda activate credit_risk_env
+```
 
-├── train.csv               # Training dataset
+**Install the required packages:**
+```bash
+pip install -r requirements.txt
+```
 
-├── test.csv                # Testing dataset
+**Set up the database:**
+1.  Make sure your MySQL server is running.
+2.  Create a new database named `credit_risk_db`.
+3.  Update the password in `DB_CONFIG` in both `dashboard.py` and `load_data_to_db.py` if yours is different.
+4.  Run the data loading script to create the tables and populate them with the initial dataset:
+    ```bash
+    python load_data_to_db.py
+    ```
 
-├── Credit_Risk_Prediction_Project.ipynb  # Jupyter Notebook for exploration and model training
+### 3. Running the Application
 
-├── risk_model.joblib       # The saved, trained model pipeline
-
-├── dashboard.py            # The Streamlit application script
-
-├── requirements.txt        # List of Python dependencies
-
-└── README.md               # You are here!
-
-__⚙️ Setup and Installation__
-
-To run this project on your local machine, follow these steps:
-
-__1. Clone the Repository:__
-
-<pre><code>git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git]</code></pre>
-
-(https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git)
-
-<pre><code> cd Credit_Risk_Prediction_Project </code></pre>
-
-__2. Create and Activate a Virtual Environment:__
-
-This keeps your project dependencies isolated.
-
-# For Windows
-
-<pre><code>python -m venv venv </code></pre>
-
-<pre><code> .\venv\Scripts\Activate.ps1 </code></pre>
-
-# For macOS/Linux
-
-<pre><code> python3 -m venv venv </code></pre>
-
-<pre><code> source venv/bin/activate python </code></pre>
-
-
-
-__3. Install Dependencies:__
-
-This command installs all the necessary libraries listed in requirements.txt.
-
-<pre><code>pip install -r requirements.txt</code></pre>
-
-__4. Run the Streamlit App:__
-
-This will start the web server and open the dashboard in your browser.
-
-<pre><code>streamlit run dashboard.py </code></pre>
-__OR__
-<pre><code>python -m streamlit run dashboard.py </code></pre>
-
-__📈 Model Details__
-
-The prediction model is a RandomForestClassifier (or XGBClassifier, whichever you used) wrapped in a Scikit-learn Pipeline. The pipeline handles all preprocessing steps, including:
-
-Imputing missing values for both numerical and categorical features.
-
-Scaling numerical features using StandardScaler.
-
-Encoding categorical features using OneHotEncoder.
-
-The model achieved an accuracy of [Enter Your Accuracy Here, e.g., 82%] on the validation set.
-
-__👤 Author__
-
-Mayur Doiphode
-
-GitHub: @Mayurdoiphode55
-
-
-__📄 License__
-This project is licensed under the MIT License. See the LICENSE file for details.
+Once the setup is complete, run the Streamlit application from your terminal:
+```bash
+streamlit run dashboard.py
+```
+A new tab should open in your web browser with the dashboard running!
