@@ -83,26 +83,13 @@ erDiagram
     loan_applications ||--o{ predictions : "receives"
     predictions ||--|{ explanations : "is composed of"
 ```
-
----
-## 📸 Screenshots
-
-*(**TODO**: Add your own screenshots here!)*
-
-**Prediction Page with SHAP Explanation**
-![Prediction Page](https://i.imgur.com/example-link.png)
-
-**Prediction History & Monitoring Dashboard**
-![Monitoring Page](https://i.imgur.com/example-link.png)
-
----
 ## 🚀 Getting Started
 
 Follow these steps to set up and run the project on your local machine.
 
 ### 1. Prerequisites
 * Git
-* Conda or Miniconda
+* Python (version 3.10 or 3.11 recommended)
 * A running MySQL Server instance on your local machine.
 
 ### 2. Setup Instructions
@@ -113,10 +100,22 @@ git clone [https://github.com/Mayurdoiphode55/Credit_Risk_Prediction_Project.git
 cd Credit_Risk_Prediction_Project
 ```
 
-**Create and activate the Conda environment:**
+**Create and activate the virtual environment:**
 ```bash
-conda create --name credit_risk_env python=3.11 -y
-conda activate credit_risk_env
+# Create the virtual environment
+python -m venv credit_risk_env
+```
+```bash
+# Activate the environment (choose the command for your shell)
+
+# Windows (PowerShell):
+.\credit_risk_env\Scripts\Activate.ps1
+
+# Windows (Command Prompt):
+.\credit_risk_env\Scripts\activate.bat
+
+# macOS / Linux:
+source credit_risk_env/bin/activate
 ```
 
 **Install the required packages:**
