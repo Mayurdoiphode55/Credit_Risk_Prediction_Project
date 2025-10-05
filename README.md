@@ -1,4 +1,4 @@
-# 🏦 Credit Risk Prediction System with MLOps & Explainable AI (Flask/MySQL)
+# 🏦 Credit Risk Prediction System with MLOps & Explainable AI (Flask + MySQL)
 
 This project is an end-to-end machine learning application designed to predict credit risk for loan applications. It integrates a powerful ML model with a full database backend and an interactive **RESTful API and web dashboard built with Flask**, demonstrating a full MLOps cycle from data loading to prediction, explanation, and monitoring.
 
@@ -163,7 +163,11 @@ pip install -r requirements.txt
 
 ### 3. Running the Application
 
-Once the setup is complete, run the Streamlit application from your terminal:
+After setup, start the Flask server:
+```bash
+set FLASK_APP=app.py
+```
+
 ```bash
 flask run
 ```
