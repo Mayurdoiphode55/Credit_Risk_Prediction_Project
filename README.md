@@ -54,12 +54,17 @@ The system uses a three-tier design where Flask handles the UI, API, and busines
 
 ```mermaid
 graph TD
-    A[User] -->|Interacts with| B(Flask Web Application);
-    B -->|Serves HTML Templates| A;
-    B -->|Calls API Endpoints| B;
-    B -->|Loads Model at Startup| D([Models/risk_model.joblib]);
-    B -->|Reads/Writes Data| E[(MySQL Database)];
-    B -->|Generates SHAP Explanation| B;
+    A[User] -->|1. Request / Predict| B(Flask Application);
+    B -->|2. Serves UI| A;
+    B -->|3. Loads Model| C(ML Model Pipeline: risk_model.joblib);
+    B -->|4. Accesses Historical Data| E[(MySQL Database)];
+    subgraph Prediction Process
+        B -- 5. Sends Input Data --> C;
+        C -->|6. Performs Prediction| F{Prediction};
+        F -->|7. SHAP Explanation| G(SHAP Explainer);
+        G -->|8. Returns Result/Plot| B;
+    end
+    B -->|9. Logs Prediction History| E;
 ```
 
 ---
