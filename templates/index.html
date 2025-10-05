@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Prediction Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        .page-content {
+            display: none;
+        }
+        .active-tab {
+            background-color: #6366f1;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .inactive-tab {
+            color: #c7d2fe;
+        }
+        .inactive-tab:hover {
+            background-color: #4338ca;
+            color: white;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f3f4f6;
+        }
+        @media (max-width: 768px) {
+            #history-table-container table, #history-table-container thead, #history-table-container tbody, #history-table-container th, #history-table-container td, #history-table-container tr {
+                display: block;
+            }
+            #history-table-container thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            #history-table-container td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            #history-table-container td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+            #history-table-container td:nth-of-type(1):before { content: "ID"; }
+            #history-table-container td:nth-of-type(2):before { content: "App ID"; }
+            #history-table-container td:nth-of-type(3):before { content: "Status"; }
+            #history-table-container td:nth-of-type(4):before { content: "Probability"; }
+            #history-table-container td:nth-of-type(5):before { content: "Date"; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex font-sans">
+
+    <aside class="w-64 bg-indigo-800 p-6 space-y-4 shadow-xl flex flex-col">
+        <h1 class="text-2xl font-bold text-white mb-6">🏦 Credit Risk</h1>
+        <nav class="space-y-2">
+            <button class="nav-btn w-full text-left p-3 rounded-xl transition duration-200 inactive-tab" data-page="home">🏠 Home</button>
+            <button class="nav-btn w-full text-left p-3 rounded-xl transition duration-200 inactive-tab" data-page="eda">📊 Exploratory Data Analysis</button>
+            <button class="nav-btn w-full text-left p-3 rounded-xl transition duration-200 inactive-tab" data-page="predict">🔮 Make a Prediction</button>
+            <button class="nav-btn w-full text-left p-3 rounded-xl transition duration-200 inactive-tab" data-page="history">📈 Prediction History</button>
+            <button class="nav-btn w-full text-left p-3 rounded-xl transition duration-200 inactive-tab" data-page="importance">🌍 Global Importance</button>
+        </nav>
+        <div class="mt-auto pt-6 border-t border-indigo-700">
+            <p class="text-sm text-indigo-300">Machine Learning model deployed via Flask.</p>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-8" id="page-title">Credit Risk Prediction Dashboard</h1>
+        
+        <div id="message-container" class="mb-4"></div>
+
+        <div id="home-page" class="page-content">
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-8 rounded-xl shadow-lg mb-6">
+                <h2 class="text-3xl font-bold text-indigo-900 mb-4">Credit Risk Prediction System</h2>
+                <p class="text-lg text-gray-700 mb-2">AI-Powered Loan Application Assessment Platform</p>
+                <p class="text-gray-600">Make data-driven lending decisions with machine learning and explainable AI</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                    <div class="text-3xl mb-3">🤖</div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Machine Learning</h3>
+                    <p class="text-sm text-gray-600">Advanced ML models trained on historical loan data to predict approval likelihood with high accuracy</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <div class="text-3xl mb-3">💡</div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Explainable AI</h3>
+                    <p class="text-sm text-gray-600">SHAP values provide transparent explanations for every prediction, showing which factors influence decisions</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <div class="text-3xl mb-3">📊</div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Data Analytics</h3>
+                    <p class="text-sm text-gray-600">Comprehensive dashboards and visualizations for monitoring trends and model performance</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-6">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">About This System</h3>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    This Credit Risk Prediction System is an end-to-end machine learning application designed to assist financial institutions in making informed lending decisions. By analyzing applicant information such as income, credit history, loan amount, and demographics, the system predicts whether a loan application should be approved or rejected.
+                </p>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    Unlike traditional black-box models, our system uses SHAP (SHapley Additive exPlanations) to provide clear, interpretable explanations for each prediction. This transparency helps loan officers understand the reasoning behind each decision and ensures regulatory compliance.
+                </p>
+
+                <h4 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Key Features</h4>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 font-bold mr-2">•</span>
+                        <span><strong>Real-time Predictions:</strong> Instant loan approval recommendations based on applicant data</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 font-bold mr-2">•</span>
+                        <span><strong>Feature Importance Analysis:</strong> Understand which factors most influence approval decisions</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 font-bold mr-2">•</span>
+                        <span><strong>Historical Tracking:</strong> Monitor all predictions with detailed records stored in MySQL database</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 font-bold mr-2">•</span>
+                        <span><strong>Exploratory Data Analysis:</strong> Interactive visualizations to explore patterns in loan applications</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 font-bold mr-2">•</span>
+                        <span><strong>SHAP Explanations:</strong> Visual breakdown of how each feature contributes to the prediction</span>
+                    </li>
+                </ul>
+
+            </div>
+
+            <div class="bg-indigo-100 border-l-4 border-indigo-500 p-6 rounded-lg mt-6">
+                <p class="text-indigo-900 font-semibold mb-2">Get Started</p>
+                <p class="text-indigo-800 text-sm">Use the navigation menu on the left to explore data analytics, make predictions, view historical data, or analyze feature importance. Each section provides interactive tools for comprehensive credit risk assessment.</p>
+            </div>
+        </div>
+
+        <div id="eda-page" class="page-content">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Exploratory Data Analysis</h2>
+                <p class="text-gray-600 mb-6">Explore relationships between applicant features and loan status.</p>
+                
+                <div id="eda-metrics" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
+
+                <div class="mb-6">
+                    <label for="eda-feature-select" class="block text-sm font-medium text-gray-700 mb-2">Select Feature:</label>
+                    <select id="eda-feature-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></select>
+                </div>
+
+                <div id="eda-chart-container" class="w-full h-[400px]"></div>
+                
+                <p id="eda-loading" class="hidden text-center text-indigo-500 mt-4">Loading EDA data...</p>
+                <p id="eda-error" class="hidden text-center text-red-500 mt-4"></p>
+            </div>
+        </div>
+
+        <div id="predict-page" class="page-content">
+            <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Make a Prediction</h2>
+                <p class="text-gray-600 mb-6">Enter applicant details to get loan approval prediction.</p>
+                
+                <form id="prediction-form" class="space-y-6">
+                    <h3 class="text-xl font-medium text-indigo-600 border-b pb-2 mb-4">Applicant Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            {% for col in ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed'] %}
+                            <div>
+                                <label for="{{ col|lower }}" class="block text-sm font-medium text-gray-700">{{ col.replace('_', ' ') }}</label>
+                                <select id="{{ col|lower }}" name="{{ col|lower }}" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    {% for option in select_options[col] %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label for="applicant_income" class="block text-sm font-medium text-gray-700">Applicant Income ($)</label>
+                                <input type="number" id="applicant_income" name="applicant_income" value="5000" min="0" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="coapplicant_income" class="block text-sm font-medium text-gray-700">Co-applicant Income ($)</label>
+                                <input type="number" id="coapplicant_income" name="coapplicant_income" value="1500.0" min="0" step="0.01" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="loan_amount" class="block text-sm font-medium text-gray-700">Loan Amount ($)</label>
+                                <input type="number" id="loan_amount" name="loan_amount" value="150.0" min="0" step="0.1" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="loan_amount_term" class="block text-sm font-medium text-gray-700">Loan Term (months)</label>
+                                <input type="number" id="loan_amount_term" name="loan_amount_term" value="360.0" min="1" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="property_area" class="block text-sm font-medium text-gray-700">Property Area</label>
+                                <select id="property_area" name="property_area" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    {% for option in select_options['Property_Area'] %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-medium text-indigo-600 border-b pb-2 mb-4 mt-6">Credit History</h3>
+                    <div>
+                        <label for="credit_history" class="block text-sm font-medium text-gray-700">Credit History Available?</label>
+                        <select id="credit_history" name="credit_history" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="1.0">Yes</option>
+                            <option value="0.0">No</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="predict-btn" class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition duration-200">
+                        Predict Approval Status
+                    </button>
+                    <p id="prediction-loading" class="hidden text-center text-indigo-500 mt-4">Calculating prediction...</p>
+                </form>
+            </div>
+
+            <div id="prediction-results" class="hidden bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Prediction Result</h3>
+                <div id="result-text" class="text-xl font-bold mb-4 p-3 rounded-lg border"></div>
+                
+                <button id="save-prediction-btn" class="py-2 px-4 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-200 mb-6">
+                    Save Prediction to Database
+                </button>
+
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 mt-6">💡 Prediction Explanation (SHAP)</h3>
+                <p class="text-sm text-gray-500 mb-4">Positive values (blue) push towards 'Approved', negative values (red) push towards 'Rejected'.</p>
+                <div id="shap-plot-container" class="w-full h-[500px] border rounded-lg bg-gray-50"></div>
+            </div>
+        </div>
+        
+        <div id="history-page" class="page-content">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Prediction History & Monitoring</h2>
+                <p class="text-gray-600 mb-6">History of all predictions made and saved to database.</p>
+                
+                <div id="history-metrics" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"></div>
+                <div id="history-chart-container" class="w-full h-[400px] mb-8"></div>
+
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Recent Predictions</h3>
+                <div id="history-table-container" class="w-full overflow-x-auto"></div>
+
+                <p id="history-loading" class="hidden text-center text-indigo-500 mt-4">Loading history...</p>
+                <p id="history-error" class="hidden text-center text-red-500 mt-4"></p>
+            </div>
+        </div>
+        
+        <div id="importance-page" class="page-content">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Global Feature Importance</h2>
+                <p class="text-gray-600 mb-6">Features with most impact on predictions (mean absolute SHAP value).</p>
+                
+                <div id="importance-chart-container" class="w-full h-[400px]"></div>
+                
+                <p id="importance-loading" class="hidden text-center text-indigo-500 mt-4">Loading importance...</p>
+                <p id="importance-error" class="hidden text-center text-red-500 mt-4"></p>
+            </div>
+        </div>
+
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const pageContents = document.querySelectorAll('.page-content');
+            const pageTitle = document.getElementById('page-title');
+            const messageContainer = document.getElementById('message-container');
+            let currentPage = 'home';
+            let edaCharts = {};
+            const EDA_FEATURES = ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'Property_Area'];
+
+            function showMessage(type, text) {
+                const colors = {
+                    success: 'bg-green-100 border-green-400 text-green-700',
+                    error: 'bg-red-100 border-red-400 text-red-700',
+                    info: 'bg-blue-100 border-blue-400 text-blue-700',
+                    warning: 'bg-yellow-100 border-yellow-400 text-yellow-700',
+                };
+                messageContainer.innerHTML = `
+                    <div class="p-3 border rounded-xl ${colors[type]} mb-4 flex justify-between items-center" role="alert">
+                        <p class="font-medium">${text}</p>
+                        <button onclick="this.parentElement.remove()" class="text-xl font-bold ml-4">&times;</button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const alertDiv = messageContainer.querySelector('div');
+                    if (alertDiv) alertDiv.remove();
+                }, 5000);
+            }
+
+            function navigateTo(page) {
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active-tab');
+                    btn.classList.add('inactive-tab');
+                    if (btn.dataset.page === page) {
+                        btn.classList.add('active-tab');
+                        btn.classList.remove('inactive-tab');
+                        pageTitle.textContent = btn.textContent.trim();
+                    }
+                });
+
+                pageContents.forEach(content => content.style.display = 'none');
+                document.getElementById(`${page}-page`).style.display = 'block';
+                currentPage = page;
+
+                if (page === 'eda') loadEDAData();
+                if (page === 'history') loadHistoryData();
+                if (page === 'importance') loadImportanceData();
+                if (page === 'predict') document.getElementById('prediction-results').classList.add('hidden');
+            }
+
+            async function fetchData(url, options = {}, maxRetries = 3) {
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        const response = await fetch(url, options);
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return await response.json();
+                    } catch (error) {
+                        if (i === maxRetries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                    }
+                }
+            }
+
+            const edaFeatureSelect = document.getElementById('eda-feature-select');
+            
+            async function loadEDAData() {
+                const loading = document.getElementById('eda-loading');
+                const errorDiv = document.getElementById('eda-error');
+                loading.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+                
+                try {
+                    const data = await fetchData('/api/eda');
+                    if (data.error) throw new Error(data.error);
+
+                    edaCharts = data.charts;
+
+                    document.getElementById('eda-metrics').innerHTML = `
+                        <div class="bg-blue-50 p-4 rounded-xl shadow-md border-l-4 border-blue-500">
+                            <p class="text-sm font-medium text-blue-500">Approval Rate</p>
+                            <p class="text-2xl font-bold text-blue-900">${data.metrics.approval_rate}</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-xl shadow-md border-l-4 border-purple-500">
+                            <p class="text-sm font-medium text-purple-500">Avg Loan Amount</p>
+                            <p class="text-2xl font-bold text-purple-900">${data.metrics.avg_loan_amnt}</p>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded-xl shadow-md border-l-4 border-teal-500">
+                            <p class="text-sm font-medium text-teal-500">Avg Income</p>
+                            <p class="text-2xl font-bold text-teal-900">${data.metrics.avg_income}</p>
+                        </div>
+                    `;
+
+                    if (edaFeatureSelect.options.length === 0) {
+                        EDA_FEATURES.forEach(feature => {
+                            const option = document.createElement('option');
+                            option.value = feature;
+                            option.textContent = feature.replace(/_/g, ' ');
+                            edaFeatureSelect.appendChild(option);
+                        });
+                    }
+                    renderChart(edaFeatureSelect.value || 'Gender');
+                    
+                } catch (error) {
+                    errorDiv.textContent = `Error: ${error.message}`;
+                    errorDiv.classList.remove('hidden');
+                } finally {
+                    loading.classList.add('hidden');
+                }
+            }
+
+            function renderChart(feature) {
+                const chartJson = edaCharts[feature];
+                if (chartJson) {
+                    try {
+                        const graph = JSON.parse(chartJson);
+                        Plotly.react('eda-chart-container', graph.data, graph.layout);
+                    } catch (e) {
+                        document.getElementById('eda-chart-container').innerHTML = '<p class="text-center text-red-500">Error rendering chart.</p>';
+                    }
+                }
+            }
+
+            edaFeatureSelect.addEventListener('change', (e) => renderChart(e.target.value));
+
+            const predictionForm = document.getElementById('prediction-form');
+            const predictionResultsDiv = document.getElementById('prediction-results');
+            const resultText = document.getElementById('result-text');
+            const savePredictionBtn = document.getElementById('save-prediction-btn');
+
+            predictionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const loading = document.getElementById('prediction-loading');
+                loading.classList.remove('hidden');
+                predictionResultsDiv.classList.add('hidden');
+                messageContainer.innerHTML = '';
+                savePredictionBtn.style.display = 'none';
+                
+                const formData = new FormData(predictionForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const result = await fetchData('/api/predict', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (result.error) throw new Error(result.error);
+
+                    const statusColor = result.predicted_status === 'Approved' ? 'bg-green-100 text-green-700 border-green-400' : 'bg-red-100 text-red-700 border-red-400';
+                    const statusText = result.predicted_status === 'Approved' ? '✅ Approved' : '❌ Rejected';
+
+                    resultText.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="${statusColor} p-2 rounded-lg font-extrabold text-lg">${statusText}</span>
+                            <span class="text-gray-600 text-base">Probability: ${result.probability}</span>
+                        </div>
+                    `;
+                    
+                    // Clear and render SHAP chart
+                    const shapGraph = JSON.parse(result.shap_html);
+                    Plotly.newPlot('shap-plot-container', shapGraph.data, shapGraph.layout, {responsive: true});
+                    
+                    predictionResultsDiv.classList.remove('hidden');
+                    savePredictionBtn.style.display = 'block';
+
+                } catch (error) {
+                    showMessage('error', `Prediction failed: ${error.message}`);
+                    predictionResultsDiv.classList.add('hidden');
+                } finally {
+                    loading.classList.add('hidden');
+                }
+            });
+
+            savePredictionBtn.addEventListener('click', async () => {
+                savePredictionBtn.disabled = true;
+                savePredictionBtn.textContent = 'Saving...';
+                
+                try {
+                    const result = await fetchData('/api/save_prediction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({})
+                    });
+
+                    if (result.error) throw new Error(result.message || 'Failed to save.');
+                    
+                    showMessage('success', result.message);
+                    savePredictionBtn.style.display = 'none';
+                    
+                    if (currentPage === 'history') loadHistoryData();
+                    
+                } catch (error) {
+                    showMessage('error', error.message);
+                } finally {
+                    savePredictionBtn.disabled = false;
+                    savePredictionBtn.textContent = 'Save Prediction to Database';
+                }
+            });
+
+            async function loadHistoryData() {
+                const loading = document.getElementById('history-loading');
+                const errorDiv = document.getElementById('history-error');
+                loading.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+                
+                try {
+                    const data = await fetchData('/api/history');
+                    
+                    if (data.error) throw new Error(data.error);
+                    
+                    const metricsContainer = document.getElementById('history-metrics');
+                    const chartContainer = document.getElementById('history-chart-container');
+                    const tableContainer = document.getElementById('history-table-container');
+
+                    if (data.status === 'empty') {
+                        metricsContainer.innerHTML = '';
+                        chartContainer.innerHTML = '<p class="text-center text-gray-500">No predictions yet.</p>';
+                        tableContainer.innerHTML = '';
+                        showMessage('warning', data.message);
+                        return;
+                    }
+
+                    metricsContainer.innerHTML = `
+                        <div class="bg-blue-50 p-4 rounded-xl shadow-md border-l-4 border-blue-500">
+                            <p class="text-sm font-medium text-blue-500">Total Predictions</p>
+                            <p class="text-2xl font-bold text-blue-900">${data.metrics.total}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-xl shadow-md border-l-4 border-green-500">
+                            <p class="text-sm font-medium text-green-500">Approval Rate</p>
+                            <p class="text-2xl font-bold text-green-900">${data.metrics.approval_rate}</p>
+                        </div>
+                    `;
+
+                    const graph = JSON.parse(data.pie_chart);
+                    Plotly.react('history-chart-container', graph.data, graph.layout);
+
+                    let tableHTML = `<table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">App ID</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Probability</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">`;
+
+                    data.recent_predictions.forEach(row => {
+                        const statusClass = row.Predicted_Status === 'Approved' ? 'text-green-600' : 'text-red-600';
+                        tableHTML += `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Prediction_Id}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Application_Id}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${statusClass}">${row.Predicted_Status}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.Probability}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Prediction_Date}</td>
+                            </tr>`;
+                    });
+
+                    tableHTML += `</tbody></table>`;
+                    tableContainer.innerHTML = tableHTML;
+
+                } catch (error) {
+                    errorDiv.textContent = `Error: ${error.message}`;
+                    errorDiv.classList.remove('hidden');
+                } finally {
+                    loading.classList.add('hidden');
+                }
+            }
+
+            async function loadImportanceData() {
+                const loading = document.getElementById('importance-loading');
+                const errorDiv = document.getElementById('importance-error');
+                loading.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+                
+                try {
+                    const data = await fetchData('/api/importance');
+                    
+                    if (data.error) throw new Error(data.error);
+                    
+                    const chartContainer = document.getElementById('importance-chart-container');
+
+                    if (data.status === 'empty') {
+                        chartContainer.innerHTML = '<p class="text-center text-gray-500">No data. Make predictions first.</p>';
+                        return;
+                    }
+
+                    const graph = JSON.parse(data.bar_chart);
+                    Plotly.react('importance-chart-container', graph.data, graph.layout);
+
+                } catch (error) {
+                    errorDiv.textContent = `Error: ${error.message}`;
+                    errorDiv.classList.remove('hidden');
+                } finally {
+                    loading.classList.add('hidden');
+                }
+            }
+
+            navButtons.forEach(btn => btn.addEventListener('click', (e) => navigateTo(e.target.dataset.page)));
+            navigateTo('home');
+        });
+    </script>
+</body>
+</html>
